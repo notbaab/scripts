@@ -1,0 +1,4 @@
+#!/bin/bash
+# A pretty git log graph
+git log --graph --decorate --stat --date=iso
+
