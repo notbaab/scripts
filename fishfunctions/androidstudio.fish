@@ -1,0 +1,3 @@
+function androidstudio
+	studio&
+end
