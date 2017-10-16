@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]
+then
+    echo 'Pass in the name to locate'
+    exit 1
+fi
+
+file=$(locate "${1}" | grep "${1}$")
+
+read -p "Edit $file in vim? " -n 1 -r
+echo    # (optional) move to a new line
+
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    vim $file
+fi
+
