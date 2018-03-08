@@ -3,14 +3,18 @@ function fram_create
 end
 
 function fram_cmake
-    # Check some shit so we don't fuck up
-    cmake $DRAM_CMAKE_FLAGS $argv
+    cmake $DRAM_CMAKE_FLAGS $argv[2..-1]
 end
 
 function fram_use
+    if not test -d $DRAM_ROOT/$argv[1]
+        echo "fram $DRAM_ROOT/$argv[1] doesn't exits"
+        return
+    end
+
     set -gx dram_path $DRAM_ROOT/$argv[1]
     set -gx PATH $PATH $dram_path/bin
-    set -gx DRAM_CMAKE_FLAGS "-DCMAKE_INSTALL_PREFIX=$dram_path -DCMAKE_PREFIX_PATH=$dram_path"
+    set -gx DRAM_CMAKE_FLAGS -DCMAKE_PREFIX_PATH=$dram_path -DCMAKE_INSTALL_PREFIX=$dram_path
     set -gx DRAM_CONFIGURE_FLAGS "--prefix=$dram_path"
     source $dram_path/pyenv/bin/activate.fish
     set -gx LD_LIBRARY_PATH $dram_path/lib:$dram_path/pyenv/lib
@@ -20,7 +24,9 @@ end
 function fram
     switch $argv[1];
     case use;
-        fram_use $argv[2]
+        if fram_use $argv[2]
+            title fram $argv[2]
+        end
     case create;
         fram_create
     case cmake;
