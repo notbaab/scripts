@@ -6,13 +6,25 @@ then
     exit 1
 fi
 
-file=$(locate "${1}" | grep "${1}$")
+files=$(locate "${1}" | grep "${1}$")
 
-read -p "Edit $file in vim? " -n 1 -r
-echo    # (optional) move to a new line
+idx=0
+for f in $files; do
+    echo $idx $f
+    idx=$((idx+1))
+done
 
-if [[ $REPLY =~ ^[Yy]$ ]]
+idx=$((idx-1))
+
+read -p "Which to edit? (0-$idx) " -e -r selected
+
+echo $selected
+files_arr=($files)
+
+if [ $selected -gt $idx ]
 then
-    vim $file
+    echo "Invalid seleciton"
+    exit 1
 fi
 
+vim ${files_arr[$selected]}
